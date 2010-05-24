@@ -4,38 +4,29 @@
   , RankNTypes
   , KindSignatures
   #-}
-module Generics.Morphism.Ana where
+module Data.Morphism.Anamorphism where
 
-import Annotation.Annotation
-import Control.Applicative
+import Data.Annotation
 import Control.Monad.Identity
 import Data.Traversable
-import Generics.Fixpoint
-import qualified Generics.Morphism.Apo as Apo
-
--- | Anamorphic coalgebra with type variables for annotation, functor and seed.
+import Data.Identity
+import Data.Fixpoint
+import qualified Data.Morphism.Apomorphism as Apo
 
 data CoalgA (a :: (* -> *) -> * -> *) (s :: *) (f :: * -> *) where
   Phi :: (s -> f s) -> CoalgA a s f
 
--- | Anamorphic coalgebra with annotation variable hidden as an existential.
-
 type Coalg s f = forall a. CoalgA a s f
 
--- | Allow anamorphic algebras to be run as an apomorphism.
+phi :: Functor f => CoalgA a s f -> Apo.CoalgA a f s
+phi (Phi s) = Apo.Phi (fmap Left . s)
 
-toApo :: Functor f => CoalgA a s f -> Apo.CoalgA a f s
-toApo (Phi s) = Apo.Phi (fmap Left . s)
+anaMA :: (Monad m, Traversable f, In a f m) => CoalgA a s f -> s -> m (FixA a f)
+anaMA = Apo.apoMA . phi
 
-anaMA :: (Traversable f, AnnIO a f m) => CoalgA a s f -> s -> m (FixA a f)
-anaMA = Apo.apoMA . toApo
-
-anaM :: (Traversable f, Applicative m, Monad m) => CoalgA Id s f -> s -> m (Fix f)
-anaM = Apo.apoM . toApo
-
-anaA :: (Traversable f, AnnIO a f Identity) => CoalgA a s f -> s -> FixA a f
-anaA = Apo.apoA . toApo
+anaA :: (Traversable f, In a f Identity) => CoalgA a s f -> s -> FixA a f
+anaA = Apo.apoA . phi
 
 ana :: Traversable f => CoalgA Id s f -> s -> Fix f
-ana = Apo.apo . toApo
+ana = Apo.apo . phi
 
