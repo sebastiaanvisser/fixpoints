@@ -16,17 +16,17 @@ import Data.Identity
 import Data.Traversable
 import Prelude hiding (mapM)
 
-data CoalgA (a :: (* -> *) -> * -> *) (f :: * -> *) where
-  Phi :: (f (FixA a f) -> f (Either (FixA a f) (FixBotA a f))) -> CoalgA a f
+data CoalgebraA (a :: (* -> *) -> * -> *) (f :: * -> *) where
+  Phi :: (f (FixA a f) -> f (Either (FixA a f) (FixBotA a f))) -> CoalgebraA a f
 
-type Coalg f = forall a. CoalgA a f
+type Coalgebra f = forall a. CoalgebraA a f
 
-endoMA :: (Monad m, In a f m, Traversable f, OutIn a f m) => CoalgA a f -> FixA a f -> m (FixA a f)
-endoMA (Phi phi) = outIn1 (mapM (endoMA (Phi phi) `either` topIn) . phi)
+endoapomorphismMA :: (Monad m, In a f m, Traversable f, OutIn a f m) => CoalgebraA a f -> FixA a f -> m (FixA a f)
+endoapomorphismMA (Phi phi) = outIn1 (mapM (endoapomorphismMA (Phi phi) `either` topIn) . phi)
 
-endoA :: (OutIn a f Identity, Traversable f) => CoalgA a f -> FixA a f -> FixA a f
-endoA phi = runIdentity . endoMA phi
+endoapomorphismA :: (OutIn a f Identity, Traversable f) => CoalgebraA a f -> FixA a f -> FixA a f
+endoapomorphismA phi = runIdentity . endoapomorphismMA phi
 
-endo :: Traversable f => CoalgA Id f -> Fix f -> Fix f
-endo phi = fullyOutId . runIdentity . endoMA phi . fullyInId
+endoapomorphism :: Traversable f => CoalgebraA Id f -> Fix f -> Fix f
+endoapomorphism phi = fullyOutId . runIdentity . endoapomorphismMA phi . fullyInId
 

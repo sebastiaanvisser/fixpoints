@@ -13,20 +13,20 @@ import Data.Identity
 import Data.Fixpoint
 import qualified Data.Morphism.Apomorphism as Apo
 
-data CoalgA (a :: (* -> *) -> * -> *) (s :: *) (f :: * -> *) where
-  Phi :: (s -> f s) -> CoalgA a s f
+data CoalgebraA (a :: (* -> *) -> * -> *) (s :: *) (f :: * -> *) where
+  Phi :: (s -> f s) -> CoalgebraA a s f
 
-type Coalg s f = forall a. CoalgA a s f
+type Coalgebra s f = forall a. CoalgebraA a s f
 
-phi :: Functor f => CoalgA a s f -> Apo.CoalgA a f s
+phi :: Functor f => CoalgebraA a s f -> Apo.CoalgebraA a f s
 phi (Phi s) = Apo.Phi (fmap Left . s)
 
-anaMA :: (Monad m, Traversable f, In a f m) => CoalgA a s f -> s -> m (FixA a f)
-anaMA = Apo.apoMA . phi
+anamorphismMA :: (Monad m, Traversable f, In a f m) => CoalgebraA a s f -> s -> m (FixA a f)
+anamorphismMA = Apo.apomorphismMA . phi
 
-anaA :: (Traversable f, In a f Identity) => CoalgA a s f -> s -> FixA a f
-anaA = Apo.apoA . phi
+anamorphismA :: (Traversable f, In a f Identity) => CoalgebraA a s f -> s -> FixA a f
+anamorphismA = Apo.apomorphismA . phi
 
-ana :: Traversable f => CoalgA Id s f -> s -> Fix f
-ana = Apo.apo . phi
+anamorphism :: Traversable f => CoalgebraA Id s f -> s -> Fix f
+anamorphism = Apo.apomorphism . phi
 

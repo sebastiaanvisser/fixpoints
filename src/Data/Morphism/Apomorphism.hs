@@ -17,17 +17,17 @@ import Data.Identity
 import Data.Traversable
 import Prelude hiding (mapM)
 
-data CoalgA (a :: (* -> *) -> * -> *) (f :: * -> *) (s :: *) where
-  Phi :: (s -> f (Either s (FixBotA a f))) -> CoalgA a f s
+data CoalgebraA (a :: (* -> *) -> * -> *) (f :: * -> *) (s :: *) where
+  Phi :: (s -> f (Either s (FixBotA a f))) -> CoalgebraA a f s
 
-type Coalg s f = forall a. CoalgA a f s
+type Coalgebra s f = forall a. CoalgebraA a f s
 
-apoMA :: (Monad m, Traversable f, In a f m) => CoalgA a f s -> s -> m (FixA a f)
-apoMA (Phi phi) = return . In <=< inA <=< mapM (apoMA (Phi phi) `either` topIn) . phi
+apomorphismMA :: (Monad m, Traversable f, In a f m) => CoalgebraA a f s -> s -> m (FixA a f)
+apomorphismMA (Phi phi) = return . In <=< inA <=< mapM (apomorphismMA (Phi phi) `either` topIn) . phi
 
-apoA :: (Traversable f, In a f Identity) => CoalgA a f s -> s -> FixA a f
-apoA phi = runIdentity . apoMA phi
+apomorphismA :: (Traversable f, In a f Identity) => CoalgebraA a f s -> s -> FixA a f
+apomorphismA phi = runIdentity . apomorphismMA phi
 
-apo :: Traversable f => CoalgA Id f s -> s -> Fix f
-apo phi = fullyOutId . runIdentity . apoMA phi
+apomorphism :: Traversable f => CoalgebraA Id f s -> s -> Fix f
+apomorphism phi = fullyOutId . runIdentity . apomorphismMA phi
 
