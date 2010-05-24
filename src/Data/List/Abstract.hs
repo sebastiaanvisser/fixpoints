@@ -33,6 +33,12 @@ instance (Binary x, Binary f) => Binary (ListF x f) where
   put = G.gput
   get = G.gget
 
+-- Destructor.
+
+list :: v -> (x -> f -> v) -> ListF x f -> v
+list n _ Nil         = n
+list _ c (Cons x xs) = c x xs
+
 -- Smart constructors.
 
 nil :: List x
