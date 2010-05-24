@@ -1,0 +1,42 @@
+Name:             fixpoints
+Version:          0.0.0
+Description:      Generic programming with annotated fixed points.
+Synopsis:         Generic programming with annotated fixed points.
+Category:         Data, Generics
+License:          BSD3
+License-file:     LICENSE
+Author:           Sebastiaan Visser
+Maintainer:       haskell@fvisser.nl
+Build-Type:       Simple
+Cabal-Version:    >= 1.2
+
+Library
+  GHC-Options:      -threaded -Wall -O
+  HS-Source-Dirs:   src
+
+  Build-Depends:    base ==4.*,
+                    binary,
+                    containers,
+                    fclabels,
+                    monads-fd,
+                    transformers,
+                    regular,
+                    regular-extras
+
+  Exposed-modules:  Data.Annotation
+                    Data.Compose
+                    Data.Constant
+                    Data.Debug
+                    Data.Fixpoint
+                    Data.Identity
+                    Data.List.Abstract
+                    Data.List.Algebras
+                    Data.Morphism.Anamorphism
+                    Data.Morphism.Apomorphism
+                    Data.Morphism.Catamorphism
+                    Data.Morphism.Endoapomorphism
+                    Data.Morphism.Endoparamorphism
+                    Data.Morphism.Paramorphism
+                    Data.Product
+                    Data.Sum
+                    Data.Tuples
