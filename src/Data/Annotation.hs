@@ -28,9 +28,9 @@ fullyIn = return . In <=< inA <=< mapM fullyIn . out
 fullyOut :: (Monad m, Traversable f, Out a f m) => FixA a f -> m (Fix f)
 fullyOut = return . In <=< mapM fullyOut <=< outA . out
 
-class (In a f m, Out a f m) => InOut a f m where
-  inOutA :: (f g -> m (f g)) -> a f g -> m (a f g)
+class (In a f m, Out a f m) => OutIn a f m where
+  outInA :: (f g -> m (f g)) -> a f g -> m (a f g)
 
-defaultInOut :: (InOut a f m, Monad m) => (f g -> m (f g)) -> a f g -> m (a f g)
-defaultInOut f = inA <=< f <=< outA
+defaultOutIn :: (OutIn a f m, Monad m) => (f g -> m (f g)) -> a f g -> m (a f g)
+defaultOutIn f = inA <=< f <=< outA
 
