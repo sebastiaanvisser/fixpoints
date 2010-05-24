@@ -10,7 +10,7 @@ newtype Id f ix = Id { unId :: f ix }
 
 instance In    Id f Identity where inA    = return . Id
 instance Out   Id f Identity where outA   = return . unId
-instance InOut Id f Identity where inOutA = defaultInOut
+instance OutIn Id f Identity where outInA = defaultOutIn
 
 type FixId f = FixA Id f
 

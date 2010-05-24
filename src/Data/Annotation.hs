@@ -16,6 +16,12 @@ type FixBotA a f = Fix (  f :+: K (FixA a f))
 class In    a f m where inA  ::   f g -> m (a f g)
 class Out   a f m where outA :: a f g -> m (  f g) 
 
+in1 :: (Monad m, In a f m) => f (FixA a f) -> m (FixA a f)
+in1 = return . In <=< inA
+
+out1 :: (Monad m, Out a f m) => FixA a f -> m (f (FixA a f))
+out1 = outA . out
+
 topIn :: (Monad m, Traversable f, In a f m) => FixBotA a f -> m (FixA a f)
 topIn = heither (return . In <=< inA <=< mapM topIn) (return . unK) . out
 
@@ -30,6 +36,9 @@ fullyOut = return . In <=< mapM fullyOut <=< outA . out
 
 class (In a f m, Out a f m) => OutIn a f m where
   outInA :: (f g -> m (f g)) -> a f g -> m (a f g)
+
+outIn1 :: (Monad m, OutIn a f m) => (f (FixA a f) -> m (f (FixA a f))) -> FixA a f -> m (FixA a f)
+outIn1 f = return . In <=< outInA f . out
 
 defaultOutIn :: (OutIn a f m, Monad m) => (f g -> m (f g)) -> a f g -> m (a f g)
 defaultOutIn f = inA <=< f <=< outA
