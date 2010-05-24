@@ -21,11 +21,11 @@ data AlgA (a :: (* -> *) -> * -> *) (f :: * -> *) where
 
 type Alg f = forall a. AlgA a f
 
-endoMA :: (Monad m, Traversable f, InOut a f m) => AlgA a f -> FixA a f -> m (FixA a f)
+endoMA :: (Monad m, Traversable f, OutIn a f m) => AlgA a f -> FixA a f -> m (FixA a f)
 endoMA (Psi psi) = topIn . psi <=< mapM (grp (endoMA (Psi psi))) <=< outA . out
   where grp f c = liftM (c,) (f c)
 
-endoA :: (Traversable f, InOut a f Identity) => AlgA a f -> FixA a f -> FixA a f
+endoA :: (Traversable f, OutIn a f Identity) => AlgA a f -> FixA a f -> FixA a f
 endoA psi = runIdentity . endoMA psi
 
 endo :: Traversable f => AlgA Id f -> Fix f -> FixA Id f

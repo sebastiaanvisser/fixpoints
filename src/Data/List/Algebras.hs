@@ -1,4 +1,4 @@
-module Container.List.Algebras where
+module Data.List.Algebras where
 
 -- import Generics.Fixpoint
 -- import qualified Data.Morphism.Anamorphism   as Ana

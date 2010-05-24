@@ -5,7 +5,14 @@
   , KindSignatures
   , TupleSections
   #-}
-module Data.Morphism.Paramorphism where
+module Data.Morphism.Paramorphism
+( AlgA (Psi)
+, Alg
+, paraMA
+, paraA
+, para
+)
+where
 
 import Control.Applicative
 import Control.Monad hiding (mapM)
