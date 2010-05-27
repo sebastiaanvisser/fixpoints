@@ -5,7 +5,7 @@
   , TemplateHaskell
   , EmptyDataDecls
   , TypeFamilies
- #-}
+  #-}
 module Data.List.Abstract where
 
 import Data.Binary
@@ -18,7 +18,9 @@ import qualified Generics.Regular.Functions.Binary as G
 -- List datatype parametrized with value type and recursive positions.
 
 data ListF x f = Nil | Cons x f
-  deriving (Eq, Ord, Functor, Foldable, Traversable)
+  deriving ( Eq, Ord, Show
+           , Functor, Foldable, Traversable
+           )
 
 type List x = Fix (ListF x)
 
