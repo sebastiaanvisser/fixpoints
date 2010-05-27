@@ -28,6 +28,6 @@ endoparamorphismMA (Psi psi) = topIn . psi <=< mapM (grp (endoparamorphismMA (Ps
 endoparamorphismA :: (Traversable f, OutIn a f Identity) => AlgebraA a f -> FixA a f -> FixA a f
 endoparamorphismA psi = runIdentity . endoparamorphismMA psi
 
-endoparamorphism :: Traversable f => AlgebraA Id f -> Fix f -> FixA Id f
-endoparamorphism psi = runIdentity . endoparamorphismMA psi . fullyInId
+endoparamorphism :: Traversable f => Algebra f -> Fix f -> Fix f
+endoparamorphism psi = fullyOutId . runIdentity . endoparamorphismMA psi . fullyInId
 
