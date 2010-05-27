@@ -13,14 +13,26 @@ type FixA a f = Fix (a f)
 type FixBotA a f = Fix (  f :+: K (FixA a f))
 type FixTopA a f = Fix (a f :+: K (Fix    f)) 
 
-class Out   a f m where outA :: a f g -> m (  f g) 
-class In    a f m where inA  ::   f g -> m (a f g)
+class Out a f m where outA :: a f g -> m (  f g) 
+class In  a f m where inA  ::   f g -> m (a f g)
 
 out1 :: (Monad m, Out a f m) => FixA a f -> m (f (FixA a f))
 out1 = outA . out
 
 in1 :: (Monad m, In a f m) => f (FixA a f) -> m (FixA a f)
 in1 = return . In <=< inA
+
+bot :: Functor f => Fix f -> FixBotA a f
+bot = In . L . fmap bot . out
+
+top :: Fix f -> FixTopA a f
+top = In . R . K
+
+botA :: FixA a f -> FixBotA a f
+botA = In . R . K
+
+topA :: Functor (a f) => FixA a f -> FixTopA a f
+topA = In . L . fmap topA . out
 
 topOut :: (Monad m, Traversable f, Out a f m) => FixTopA a f -> m (Fix f)
 topOut = heither (return . In <=< mapM topOut <=< outA) (return . unK) . out

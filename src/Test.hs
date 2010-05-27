@@ -14,4 +14,5 @@ main =
      print ("sum:",     Pure.sum ls)
      print ("product:", Pure.product ls)
      print ("prepend:", Pure.prepend [9,6,3,0] ls)
+     print ("append:",  Pure.append [9,6,3,0] ls)
 
