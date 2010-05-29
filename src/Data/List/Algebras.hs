@@ -1,4 +1,3 @@
-{-# LANGUAGE TypeOperators, ScopedTypeVariables #-}
 module Data.List.Algebras where
 
 import Data.Annotation
@@ -32,11 +31,11 @@ fold = foldMap id
 
 ----
 
-last :: Cata.Algebra (ListF x) (Last x)
-last = foldMap (Last . Just)
-
 head :: Cata.Algebra (ListF x) (First x)
 head = foldMap (First . Just)
+
+last :: Cata.Algebra (ListF x) (Last x)
+last = foldMap (Last . Just)
 
 sum :: Num x => Cata.Algebra (ListF x) (Sum x)
 sum = foldMap Sum

@@ -37,7 +37,7 @@ instance (Binary x, Binary f) => Binary (ListF x f) where
 
 -- Destructor.
 
-list :: v -> (x -> f -> v) -> ListF x f -> v
+list :: r -> (x -> f -> r) -> ListF x f -> r
 list n _ Nil         = n
 list _ c (Cons x xs) = c x xs
 
