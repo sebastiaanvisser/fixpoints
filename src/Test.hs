@@ -2,17 +2,38 @@
 module Test where
 
 import Data.List.Abstract
-import qualified Data.List.Pure as Pure
+import Data.Tree.Abstract
+import qualified Data.List.Pure as L
+import qualified Data.Tree.Pure as T
 
 main :: IO ()
 main =
-  do let ls = Pure.fromList [1..10] :: List Int 
+  do let ls = L.fromList [1..10] :: List Integer 
      print ("list:",    ls)
-     print ("length:",  Pure.length ls :: Int)
-     print ("head:",    Pure.head ls)
-     print ("last:",    Pure.last ls)
-     print ("sum:",     Pure.sum ls)
-     print ("product:", Pure.product ls)
-     print ("prepend:", Pure.prepend [9,6,3,0] ls)
-     print ("append:",  Pure.append [9,6,3,0] ls)
+     print ("length:",  L.length ls :: Integer)
+     print ("head:",    L.head ls)
+     print ("last:",    L.last ls)
+     print ("sum:",     L.sum ls)
+     print ("product:", L.product ls)
+     print ("prepend:", L.prepend [9,6,3,0] ls)
+     print ("append:",  L.append [9,6,3,0] ls)
+
+     let tr = T.fromList (map (\a -> (a,a*a)) [5, 3, 1, 0, 10, 23, 3, 6, 12, 3]) :: Tree Int Int
+     print ("tree:",          tr)
+     print ("size:",          T.size tr :: Integer)
+     print ("depth:",         T.depth tr :: Integer)
+     print ("lookup 10:",     T.lookup 10 tr)
+     print ("lookup 3:",      T.lookup  3 tr)
+     print ("lookup 14:",     T.lookup 14 tr)
+     print ("lookupAll 10:",  T.lookupAll 10 tr)
+     print ("lookupAll 3:",   T.lookupAll  3 tr)
+     print ("lookupAll 14:",  T.lookupAll 14 tr)
+     print ("head:",          T.head tr)
+     print ("last:",          T.last tr)
+     print ("minimum:",       T.minimum tr)
+     print ("maximum:",       T.maximum tr)
+     print ("asList:",        T.asList tr)
+     print ("asListR:",       T.asListR tr)
+--      print ("concat:",        T.fold tr)
+--      print ("concatR:",       T.foldR tr)
 
