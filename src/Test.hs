@@ -5,6 +5,7 @@ import Data.List.Abstract
 import Data.Tree.Abstract
 import qualified Data.List.Pure as L
 import qualified Data.Tree.Pure as T
+import System.Random
 
 main :: IO ()
 main =
@@ -32,8 +33,14 @@ main =
      print ("last:",          T.last tr)
      print ("minimum:",       T.minimum tr)
      print ("maximum:",       T.maximum tr)
-     print ("asList:",        T.asList tr)
-     print ("asListR:",       T.asListR tr)
---      print ("concat:",        T.fold tr)
---      print ("concatR:",       T.foldR tr)
+
+     xs <- mapM (const randomIO) [1..20::Int]
+     let nums = map (\a -> let b = mod a 100 in (b,b*b)) xs
+
+     let tr1 = foldr (\(a,b) -> T.insert a b) T.empty nums :: Tree Int Int
+     print ("insert 4,16:",   tr1)
+     print ("asList:",        T.asList tr1)
+     print ("asListR:",       T.asListR tr1)
+     print "pretty:"
+     putStrLn (T.prettyPrint tr1)
 

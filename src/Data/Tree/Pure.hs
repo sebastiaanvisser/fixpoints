@@ -4,23 +4,31 @@ import Control.Applicative
 import Data.List
 import Data.Monoid
 import Data.Monoid.Bounds
+import Data.Maybe
 import Data.Ord
+import Data.Tuples
 import Data.Tree.Abstract
 import Prelude
 import qualified Data.Morphism.Anamorphism      as Ana
 import qualified Data.Morphism.Catamorphism     as Cata
--- import qualified Data.Morphism.Endoapomorphism  as Endoapo
+import qualified Data.Morphism.Endoapomorphism  as Endoapo
 -- import qualified Data.Morphism.Endoparamorphism as Endopara
 import qualified Data.Tree.Algebras as Alg
 
 fromList :: Ord k => [(k, v)] -> Tree k v
 fromList = Ana.anamorphism Alg.fromSortedList . sortBy (comparing fst)
 
+empty :: Ord k => Tree k v
+empty = fromList []
+
 lookup :: Ord k => k -> Tree k v -> Maybe v
 lookup = Cata.catamorphism . Alg.lookup
 
 lookupAll :: Ord k => k -> Tree k v -> [v]
 lookupAll = Cata.catamorphism . Alg.lookupAll
+
+insert :: Ord k => k -> v -> Tree k v -> Tree k v
+insert k v = Endoapo.endoapomorphism (Alg.insert k v)
 
 foldMap :: Monoid m => (v -> m) -> Tree k v -> m
 foldMap = Cata.catamorphism . Alg.foldMap
@@ -69,4 +77,7 @@ minimum = getMinimum . foldMap Minimum
 
 maximum :: (Ord v, Bounded v) => Tree k v -> v
 maximum = getMaximum . foldMap Maximum
+
+prettyPrint :: (Show k, Show v) => Tree k v -> String
+prettyPrint = intercalate "\n" . fromMaybe [] . trd3 . Cata.catamorphism Alg.prettyPrint
 

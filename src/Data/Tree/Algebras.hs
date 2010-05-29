@@ -1,16 +1,13 @@
 module Data.Tree.Algebras where
 
--- import Data.Annotation
--- import Data.Fixpoint
 import Data.Tree.Abstract
--- import qualified Data.Tree.Abstract as Ab
 import Data.Monoid
--- import Data.Sum
--- import Prelude hiding (tail, sum, product)
+import Data.Maybe
 import qualified Data.Morphism.Anamorphism      as Ana
 import qualified Data.Morphism.Catamorphism     as Cata
 -- import qualified Data.Morphism.Endoparamorphism as Endopara
--- import qualified Data.Morphism.Endoapomorphism  as Endoapo
+import qualified Data.Morphism.Endoapomorphism  as Endoapo
+import Data.Morphism.Endoapomorphism (make, stop, next)
 
 fromSortedList :: Ana.Coalgebra [(k, v)] (TreeF k v)
 fromSortedList = Ana.Phi $ \f ->
@@ -59,15 +56,30 @@ depth = Cata.Psi $ \f ->
     Leaf           -> 0
     Branch _ _ l r -> 1 + max l r
 
-{-
-insert :: Ord k => k -> v -> Apo.Coendo (F.Tree k v)
-insert k v = Apo.Phi $ \(InF s) ->
+insert :: Ord k => k -> v -> Endoapo.Coalgebra (TreeF k v)
+insert k v = Endoapo.Phi $ \s ->
   case s of
-    F.Leaf           -> F.Branch k v (Right (InF F.Leaf)) (Right (InF F.Leaf))
-    F.Branch m w l r ->
+    Leaf           -> Branch k v (make Leaf) (make Leaf)
+    Branch m w l r ->
       case k `compare` m of
-        LT -> F.Branch m w (Right l) (Left  r)
-        EQ -> F.Branch k v (Right l) (Right r)
-        GT -> F.Branch m w (Left  l) (Right r)
--}
+        LT -> Branch m w (next l) (stop r)
+        _  -> Branch m w (stop l) (next r)
+
+prettyPrint :: (Show k, Show v) => Cata.Algebra (TreeF k v) (Int, Int, Maybe [String])
+prettyPrint = Cata.Psi $ \f ->
+  case f of
+    Leaf -> (0, 0, Nothing)
+    Branch k v (_, i, l) (j, _, r) ->
+      let txt = concat ["(", show k, ", ", show v, ")"]
+          g x = fromMaybe [] . fmap (map (replicate (length txt) ' '++) . x)
+          a = g (mkb i) l
+          b = g (mka j) r
+      in (length a, length b, Just (a ++ [txt] ++ b))
+  where
+    mka = mk (flip (++)) (flip (++)) "\\"
+    mkb = mk (++) (++) "/"
+    mk o u c w b =
+      zipWith (++) (replicate (length b - w) (replicate w ' ')
+               `u` map (\i -> replicate (w-i-1) ' ' `o` c
+               `o` replicate i ' ') [0..w-1]) b
 
