@@ -50,6 +50,12 @@ foldMapR m = Cata.Psi $ \f ->
     Leaf           -> mempty
     Branch _ v l r -> r `mappend` m v `mappend` l
 
+-- balanced = Cata.Psi $ \f a ->
+--   case f of
+--     Leaf           -> False
+--     Branch _ _ l r -> True
+
+
 depth :: (Num r, Ord r) => Cata.Algebra (TreeF k v) r
 depth = Cata.Psi $ \f ->
   case f of
@@ -72,13 +78,13 @@ prettyPrint = Cata.Psi $ \f ->
     Branch k v (_, i, l) (j, _, r) ->
       let txt = concat ["(", show k, ", ", show v, ")"]
           g x = fromMaybe [] . fmap (map (replicate (length txt) ' '++) . x)
-          a = g (mkb i) l
-          b = g (mka j) r
+          a = g (linea i) l
+          b = g (lineb j) r
       in (length a, length b, Just (a ++ [txt] ++ b))
   where
-    mka = mk (flip (++)) (flip (++)) "\\"
-    mkb = mk (++) (++) "/"
-    mk o u c w b =
+    lineb = line (flip (++)) (flip (++)) "\\"
+    linea = line (++) (++) "/"
+    line o u c w b =
       zipWith (++) (replicate (length b - w) (replicate w ' ')
                `u` map (\i -> replicate (w-i-1) ' ' `o` c
                `o` replicate i ' ') [0..w-1]) b

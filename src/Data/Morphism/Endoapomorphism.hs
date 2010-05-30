@@ -32,7 +32,7 @@ next = Left
 stop :: FixA a f -> Either (FixA a f) (FixBotA a f)
 stop = Right . In . R . K
 
-endoapomorphismMA :: (Monad m, In a f m, Traversable f, OutIn a f m) => CoalgebraA a f -> FixA a f -> m (FixA a f)
+endoapomorphismMA :: (Monad m, Traversable f, OutIn a f m) => CoalgebraA a f -> FixA a f -> m (FixA a f)
 endoapomorphismMA (Phi phi) = outIn1 (mapM (endoapomorphismMA (Phi phi) `either` topIn) . phi)
 
 endoapomorphismA :: (OutIn a f Identity, Traversable f) => CoalgebraA a f -> FixA a f -> FixA a f

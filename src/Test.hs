@@ -34,7 +34,7 @@ main =
      print ("minimum:",       T.minimum tr)
      print ("maximum:",       T.maximum tr)
 
-     xs <- mapM (const randomIO) [1..20::Int]
+     xs <- mapM (const randomIO) [0..20::Int]
      let nums = map (\a -> let b = mod a 100 in (b,b*b)) xs
 
      let tr1 = foldr (\(a,b) -> T.insert a b) T.empty nums :: Tree Int Int
